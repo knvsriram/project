@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { FormBuilder, Validators } from '@angular/forms';
+import { QueryService } from '../query.service';
 
 export interface Query {
   name: string;
@@ -21,23 +21,36 @@ export interface Query {
 })
 export class QueriesComponent {
 
+  data:Query[] = []
+  // data: Query[] = [
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Resolved', resolution: 'We will get back to you shortly' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Resolved', resolution: 'We will get back to you shortly' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  //   { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
+  // ]
 
-  data: Query[] = [
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Resolved', resolution: 'We will get back to you shortly' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Resolved', resolution: 'We will get back to you shortly' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-    { name: 'Lokesh', email: 'klokesh1999@gmail.com', mobileNumber: 8978527113, query: "Hi Admin, Please Check this issue", status: 'Pending', resolution: '' },
-  ]
+  displayedColumns: string[] = [];
 
-  displayedColumns: string[] = Object.keys(this.data[0]);
+  constructor(private service:QueryService) { }
 
-  constructor(private fb: FormBuilder) { }
+  ngOnInit() {
+    this.getQueries();
+  }
 
-  sendResolution(value: string) {
-    console.log(value)
+  getQueries() {
+    this.service.getQueries().subscribe((data:any) => {
+      this.data=data.data;
+      this.displayedColumns=Object.keys(this.data[0]).slice(1,7);
+    })
+  }
+
+  sendResolution(id:any,value:string,email:string) {
+    this.service.resolveQuery(id,value,email).subscribe((data)=>{
+      if(data) this.getQueries();
+    },(error)=>console.log(error))
   }
 }

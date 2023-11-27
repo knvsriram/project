@@ -42,7 +42,7 @@
                 <ng-container *ngIf="element.status === 'Pending'">
                     <textarea cols="10" rows="2" class="form-control m-2" #resolutionReference></textarea>
                     <button *ngIf="element.status === 'Pending'" type="button" class="btn btn-outline-secondary m-2"
-                        (click)="sendResolution(resolutionReference.value)"> Send
+                        (click)="sendResolution(element._id,resolutionReference.value,element.email)"> Send
                         Resolution </button>
                 </ng-container>
                 <p *ngIf="element.status !== 'Pending'">{{element.resolution}}</p>

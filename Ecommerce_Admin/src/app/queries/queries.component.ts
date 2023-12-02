@@ -49,8 +49,13 @@ export class QueriesComponent {
   }
 
   sendResolution(id:any,value:string,email:string) {
+    if(!value) {
+      this.service.snackBar("Please enter some resolution before sending an email")
+      return
+    }
     this.service.resolveQuery(id,value,email).subscribe((data)=>{
+      this.service.snackBar(`${email}'s query is resolved`)
       if(data) this.getQueries();
-    },(error)=>console.log(error))
+    },(error)=>this.service.snackBar(error.message))
   }
 }

@@ -23,6 +23,7 @@
                 <button type="submit" class="btn btn-primary mt-2"
                     [disabled]="loginForm.invalid || disableSubmit">Login</button>
             </div>
+            {{g().email.errors |json}} {{g().password.errors |json}}
         </form>
     </div>
 </ng-container>
